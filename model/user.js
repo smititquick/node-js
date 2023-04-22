@@ -5,6 +5,7 @@ const userModel = new mongoose.Schema({
     "lName": { type: String, default: null },
     "email": { type: String, unique: true },
     "pass": { type: String },
+    "image" : { type : String},
     "token": { type: String }
 })
 

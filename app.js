@@ -1,43 +1,47 @@
 require("dotenv").config();
 require("./config/database").connect();
 const express = require("express");
+const fs = require("fs");
 const User = require("./model/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs/dist/bcrypt");
 var multer = require('multer');
 
 const app = express();
-var upload = multer({ dest: "./ima" });
 // app.use(express.json());
 
 /// for parsing application/x-www-form-urlencoded
 // app.use(express.urlencoded({ extended: true }))
 
-/// for parsing multipart/form-data
-app.use(upload.array());
-app.use(express.static('public'));
 
-app.post('/upload', upload.single('avatar'), (req, res) => {
-    // Handle the uploaded file here
-    const avatar = req.file;
-    console.log('Uploaded file:', avatar.originalname);
-    res.send('File uploaded successfully!');
+const storage = multer.diskStorage({
+   
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    }
 });
 
-app.post("/register", upload.single('image'), async (req, res) => {
+var upload = multer({storage: storage});
+
+/// for parsing multipart/form-data
+// app.use(upload.array());
+app.use(express.static('public'));
+
+
+app.post("/register",upload.single('image'),  async (req, res) => {
 
     try {
 
-        // const image = req.file.buffer.toString('base64');
         const fName = req.body.fName;
         const lName = req.body.lName;
         const email = req.body.email;
         const pass = req.body.pass;
+        const image = fs.readFileSync(req.file.path,'base64');
 
-        console.log(req.file);
+        // console.log(req.body);
 
 
-        if (!(fName && lName && email && pass)) {
+        if (!(fName && lName && email && pass && image)) {
             res.status(400).send({ "status": 400, "message": "All fields are required" });
             return;
         }
@@ -51,10 +55,10 @@ app.post("/register", upload.single('image'), async (req, res) => {
         encryptedPass = await bcrypt.hash(pass, 10);
 
         const user = await User.create({
-            fName, lName, email: email.toLowerCase(), pass: encryptedPass,
+            fName, lName, email: email.toLowerCase(), pass: encryptedPass, image
         })
 
-        const token = await jwt.sign({
+        const token = jwt.sign({
             id: user.id, email
         }, process.env.TOKEN_KEY, {
             expiresIn: "2h"
@@ -66,20 +70,18 @@ app.post("/register", upload.single('image'), async (req, res) => {
 
     } catch (err) {
         res.status(500).send({ "status": 500, "message": "Internal Server error" });
-        return;
         console.log(err);
+        return;
     }
 
 })
 
-app.post("/login", async (req, res) => {
+app.post("/login", upload.single('image'), async (req, res) => {
 
     try {
         /// get data from user
-        const email = req.body.email;
         const pass = req.body.pass;
-
-        console.log(email)
+        const email = req.body.email;
 
         /// required data condition
         if (!(email && pass)) {
@@ -93,7 +95,7 @@ app.post("/login", async (req, res) => {
         const user = await User.findOne({ email });
 
         if (user) {
-            jwtToken = await jwt.sign(
+            jwtToken = jwt.sign(
                 { id: user.id, email },
                 process.env.TOKEN_KEY,
                 { expiresIn: "2h" }
