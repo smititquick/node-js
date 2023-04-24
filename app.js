@@ -3,9 +3,14 @@ require("./config/database").connect();
 const express = require("express");
 const fs = require("fs");
 const User = require("./model/user");
+const DeliveryBoy = require("./model/delivery_boy");
+const Employee = require("./model/employee");
+const Franchise = require("./model/franchise");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs/dist/bcrypt");
 var multer = require('multer');
+const auth = require("./middleware/auth");
+var { MongoClient, ObjectID } = require('mongodb');
 
 const app = express();
 // app.use(express.json());
@@ -60,9 +65,7 @@ app.post("/register",upload.single('image'),  async (req, res) => {
 
         const token = jwt.sign({
             id: user.id, email
-        }, process.env.TOKEN_KEY, {
-            expiresIn: "2h"
-        });
+        }, process.env.TOKEN_KEY);
 
         user.token = token;
         res.status(200).send({ "status": 200, "message": "Successfully registered", "data": user });
@@ -97,8 +100,7 @@ app.post("/login", upload.single('image'), async (req, res) => {
         if (user) {
             jwtToken = jwt.sign(
                 { id: user.id, email },
-                process.env.TOKEN_KEY,
-                { expiresIn: "2h" }
+                process.env.TOKEN_KEY
             );
             user.token = jwtToken;
             if (await bcrypt.compare(pass, user.pass)) {
@@ -123,6 +125,44 @@ app.post("/login", upload.single('image'), async (req, res) => {
 
 })
 
-// Logic goes here
+app.post("/regenerateToken",upload.single('image'), async (req, res) => {
+    try {
+        const email = req.body.email;
+        const id = req.body.id;
+
+        if(!(email && id)){
+            res.status(400).send({"status" : 400,"message": "Please enter email id and user id"})
+            return true;
+        }
+        
+        const user = await User.findOne({email});
+        // const newId = ObjectID(id);
+        const userId = await User.findOne({"_id" : id});
+        
+        console.log(userId.id);
+        console.log(user.id);
+        if(user && userId && (user.id === userId.id)){
+            const token = jwt.sign({
+                id: id,email
+            },process.env.TOKEN_KEY)
+            
+            res.status(200).send({"status":200 , "token" : token});
+            return true;
+        } else {
+            res.status(400).send({"status" : 400,"message": "User not found"})
+            return true;
+        }
+
+    } catch (err) {
+        res.status(500).send({ "status": 500, "message": "Internal Server error" });
+        console.log(err);
+        return;
+    }
+})
+
+
+app.post("/welcome", auth, (req, res) => {
+    res.status(200).send("Welcome 🙌 ");
+  });
 
 module.exports = app;
