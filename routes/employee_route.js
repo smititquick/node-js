@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const addEmployee = require("../config/con_employee");
+const addEmployee = require("../controller/con_employee");
 
 router.post("/addEmployee", addEmployee.addEmployee);
 

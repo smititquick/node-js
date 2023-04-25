@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const addDeliveryBoy = require("../config/con_delivery_boy");
+const addDeliveryBoy = require("../controller/con_delivery_boy");
 
 router.post("/addDeliveryBoy", addDeliveryBoy.addDeliveryBoy);
 

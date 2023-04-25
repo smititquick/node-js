@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const addFranchise = require("../config/con_sub_franchise");
+const addFranchise = require("../controller/con_sub_franchise");
 
 router.post("/addSubFrenchise", addFranchise.addSubFranchise);
 
