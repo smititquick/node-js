@@ -46,7 +46,7 @@ const getEnquiry = async (req, res) => {
 
             const delivery = await Enquiry.find({ user_type: "Delivery Boy" });
             const user = await Enquiry.find({ user_type: "User" });
-            const data = [...delivery , ...user]
+            const data = [...delivery, ...user]
             res.status(200).send({ "status": 200, "message": "Enquiry fetch successfully", "data": data });
             return;
 
@@ -56,11 +56,11 @@ const getEnquiry = async (req, res) => {
             res.status(200).send({ "status": 200, "message": "Enquiry fetch successfully", "data": data });
             return;
 
-        }  else if (user_type === "Employee") {
+        } else if (user_type === "Employee") {
 
             const employee = await Enquiry.find({ user_type });
             const allData = await Enquiry.find();
-            const data = allData.subtract(employee);
+            const data = allData.filter(item1 => !employee.some(item2 => item2.id === item1.id));
             res.status(200).send({ "status": 200, "message": "Enquiry fetch successfully", "data": data });
             return;
 
@@ -68,9 +68,9 @@ const getEnquiry = async (req, res) => {
             const allData = await Enquiry.find();
             res.status(200).send({ "status": 200, "message": "Enquiry fetch successfully", "data": allData });
             return;
-        } else{ 
+        } else {
             res.status(400).send({ "status": 400, "message": "Please enter valid User type" });
-            return; 
+            return;
         }
 
     } catch (err) {
