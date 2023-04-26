@@ -20,12 +20,10 @@ const getCity = (req, res) => {
 
     const cityList = [];
     for (let i = 0; i < states.length; i++) {
-        console.log(states[i])
         if (states[i]['state'].toLowerCase() === state.toLowerCase()) {
             cityList.push(states[i]['city'].trim())
         }
     }
-    console.log(states);
     res.status(200).send({ "state": 200, "message": "City list fetched successfully", "data": { "state": state, "cities": cityList } });
     return;
 

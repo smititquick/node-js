@@ -17,8 +17,8 @@ app.use(sub_franchise_route);
 app.use(delivery_boy_route);
 app.use(employee_route);
 app.use(enquiry_route);
-app.use(get_state);
 app.use(get_profile);
+app.use(get_state);
 
 module.exports = app;
 

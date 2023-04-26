@@ -15,34 +15,27 @@ const getProfile = async (req, res) => {
             return;
         }
 
-        const user = await Franchise.findOne({ "_id": id });
-
-        if (user) {
-            res.status(400).send({ "status": 400, "message": "Email is already registered" });
-            return;
-        }
-
         if (user_type === "Sub Franchise") {
 
             const sub_franchise = await SubFranchise.find({ '_id': id });
-            res.status(200).send({ "status": 200, "message": "Enquiry fetch successfully", "data": sub_franchise });
+            res.status(200).send({ "status": 200, "message": "Profile fetch successfully", "data": sub_franchise });
             return;
 
         } else if (user_type === "Franchise") {
 
             const data = await Franchise.find({ "_id": id });
-            res.status(200).send({ "status": 200, "message": "Enquiry fetch successfully", "data": data });
+            res.status(200).send({ "status": 200, "message": "Profile fetch successfully", "data": data });
             return;
 
         } else if (user_type === "Employee") {
 
             const employee = await Employee.find({ "_id": id });
-            res.status(200).send({ "status": 200, "message": "Enquiry fetch successfully", "data": employee });
+            res.status(200).send({ "status": 200, "message": "Profile fetch successfully", "data": employee });
             return;
 
         } else if (user_type === "User") {
             const allData = await User.find({ "_id": id });
-            res.status(200).send({ "status": 200, "message": "Enquiry fetch successfully", "data": allData });
+            res.status(200).send({ "status": 200, "message": "Profile fetch successfully", "data": allData });
             return;
         }
 
