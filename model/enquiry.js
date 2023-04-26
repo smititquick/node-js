@@ -7,4 +7,6 @@ const Enquiry = mongoose.Schema({
     "message": { type: String, default: null },
     "user_id": { type: String, default: null },
     "user_type": { type: String, default: null }
-})
+});
+
+module.exports = mongoose.model("enquiry" , Enquiry);

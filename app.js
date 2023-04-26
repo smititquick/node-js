@@ -5,6 +5,7 @@ const franchise_route = require('./routes/franchise_route');
 const sub_franchise_route = require('./routes/sub_franchise_route');
 const delivery_boy_route = require('./routes/delivery_boy_route');
 const employee_route = require('./routes/employee_route');
+const enquiry_route = require("./routes/enquiry_routes");
 
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(franchise_route);
 app.use(sub_franchise_route);
 app.use(delivery_boy_route);
 app.use(employee_route);
+app.use(enquiry_route);
 
 module.exports = app;
 
