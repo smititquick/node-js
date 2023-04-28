@@ -1,3 +1,4 @@
+// var multer = require('multer');
 require("dotenv").config();
 require("./config/database").connect();
 const express = require("express");
@@ -30,7 +31,6 @@ module.exports = app;
 // const Franchise = require("./model/franchise");
 // const jwt = require("jsonwebtoken");
 // const bcrypt = require("bcryptjs/dist/bcrypt");
-// var multer = require('multer');
 // const auth = require("./middleware/auth");
 // var { MongoClient, ObjectID } = require('mongodb');
 
